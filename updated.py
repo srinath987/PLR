@@ -15,9 +15,6 @@ out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640, 480))
 times = []
 radii = []
 
-# Get the start time
-start_time = time.time()
-
 # Capture the video for 10 seconds and store the frames in an array
 frames = []
 while len(frames) <= 300:
@@ -26,10 +23,12 @@ while len(frames) <= 300:
     # Release the resources
 cap.release()
 
-
+# Get the start time
+start_time = time.time()
 
 # Process the frames and store the radii in an array
-for frame in frames:
+for i in range(len(frames)):
+    frame = frames[i]
     # Convert the image to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -39,6 +38,9 @@ for frame in frames:
     # Detect the eye region using a cascade classifier
     eye_cascade = cv2.CascadeClassifier('./haarcascade_eye.xml')
     eyes = eye_cascade.detectMultiScale(gray_blur, 1.3, 5)
+
+    if len(eyes) == 0:
+        continue
 
     # Get the eye region and calculate the radius of the pupil
     for (ex, ey, ew, eh) in eyes:
@@ -68,13 +70,51 @@ for frame in frames:
     # Write the frame to the output video
     out.write(frame)
 
+# take only one value for 10 consecutive values in radii for graph
+radii1 = [radii[i] for i in range(len(radii)) if i % 10 == 0]
+times1 = [times[i] for i in range(len(times)) if i % 10 == 0]
 
-
-# Plot the radius against time graph
-plt.plot(times, radii)
+plt.plot(times1, radii1)
 plt.xlabel('Time (s)')
 plt.ylabel('Radius')
 plt.show()
-out.release()
-cv2.destroyAllWindows()
 
+# take only one value for 5 consecutive values in radii for graph
+
+radii1 = [radii[i] for i in range(len(radii)) if i % 5 == 0]
+times1 = [times[i] for i in range(len(times)) if i % 5 == 0]
+
+plt.plot(times1, radii1)
+plt.xlabel('Time (s)')
+plt.ylabel('Radius')
+plt.show()
+
+# take only one value for 3 consecutive values in radii for graph
+
+radii1 = [radii[i] for i in range(len(radii)) if i % 3 == 0]
+times1 = [times[i] for i in range(len(times)) if i % 3 == 0]
+
+plt.plot(times1, radii1)
+plt.xlabel('Time (s)')
+plt.ylabel('Radius')
+plt.show()
+
+# take only one value for 1 consecutive values in radii for graph
+
+radii1 = [radii[i] for i in range(len(radii)) if i % 1 == 0]
+times1 = [times[i] for i in range(len(times)) if i % 1 == 0]
+
+plt.plot(times1, radii1)
+plt.xlabel('Time (s)')
+plt.ylabel('Radius')
+plt.show()
+
+
+
+# Plot the radius against time graph
+# plt.plot(times, radii)
+# plt.xlabel('Time (s)')
+# plt.ylabel('Radius')
+# plt.show()
+# out.release()
+# cv2.destroyAllWindows()
